@@ -12,12 +12,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const customerCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/Customers.csv"
-const employeeCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/Employees.csv"
-const orderDetailsCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/OrderDetails.csv"
-const ordersCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/Orders.csv"
-const productsCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/Products.csv"
-const shippingMethodCSV = "/Users/abhishek.balani/goworkspace/src/github.com/abhibalani/shoppingsite/csv_file/ShippingMethods.csv"
+const customerCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/Customers.csv"
+const employeeCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/Employees.csv"
+const orderDetailsCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/OrderDetails.csv"
+const ordersCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/Orders.csv"
+const productsCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/Products.csv"
+const shippingMethodCSV = "/Users/abhishek.balani/goworkspace/src/shoppingsite/csv_file/ShippingMethods.csv"
 
 func main() {
 
@@ -113,6 +113,7 @@ func LoadCSVtoDB() {
 
 // DbConn ...
 func DbConn() (db *sql.DB) {
+	// Connect to db
 	dbDriver := "mysql"
 	dbUser := "root"
 	dbPass := "admin123"
@@ -152,9 +153,9 @@ func GetCustomers(attr, value string) *sql.Rows {
 }
 
 // GetCustomersByEmployee ...
-func GetCustomersByEmployee(empFirstName, empLastName string) *sql.Rows {
+func GetCustomersByEmployee(empFirstName string) *sql.Rows {
 	db := DbConn()
-	selDB, err := db.Query("SELECT * FROM customer INNER JOIN employee WHERE employee.firstName=?", empFirstName, "AND employee.lastName=?", empLastName)
+	selDB, err := db.Query("SELECT * FROM customer INNER JOIN employee WHERE employee.firstName=?", empFirstName)
 	fmt.Println(selDB)
 	if err != nil {
 		panic(err.Error())
@@ -164,6 +165,7 @@ func GetCustomersByEmployee(empFirstName, empLastName string) *sql.Rows {
 
 //SerializeCustomerData ...
 func SerializeCustomerData(selDB *sql.Rows) []Customer {
+	// Convert customer sql rows to customer struct
 	var result []Customer = make([]Customer, 100)
 	for selDB.Next() {
 		cust := Customer{}
@@ -173,23 +175,23 @@ func SerializeCustomerData(selDB *sql.Rows) []Customer {
 		if err != nil {
 			panic(err.Error())
 		}
-		cust.CustomerID = id
-		cust.CompanyName = companyName
-		cust.FirstName = firstname
-		cust.LastName = lastname
-		cust.BillingAddress = billAdd
-		cust.City = city
-		cust.StateOrProvince = state
-		cust.ZipCode = zip
-		cust.Email = email
-		cust.CompanyWebsite = companySite
-		cust.PhoneNumber = phoneNum
-		cust.FaxNumber = faxNum
-		cust.ShipAddress = shipAdd
-		cust.ShipCity = shipCity
-		cust.ShipStateProvince = shipState
-		cust.ShipZipCode = shipZip
-		cust.ShipPhoneNumber = shipPhone
+		cust.customerID = id
+		cust.companyName = companyName
+		cust.firstName = firstname
+		cust.lastName = lastname
+		cust.billingAddress = billAdd
+		cust.city = city
+		cust.stateOrProvince = state
+		cust.zipCode = zip
+		cust.email = email
+		cust.companyWebsite = companySite
+		cust.phoneNumber = phoneNum
+		cust.faxNumber = faxNum
+		cust.shipAddress = shipAdd
+		cust.shipCity = shipCity
+		cust.shipStateProvince = shipState
+		cust.shipZipCode = shipZip
+		cust.shipPhoneNumber = shipPhone
 
 		result = append(result, cust)
 	}
@@ -198,6 +200,7 @@ func SerializeCustomerData(selDB *sql.Rows) []Customer {
 
 // SerializedOrderData ...
 func SerializedOrderData(selDB *sql.Rows) []Order {
+	// Convert order sql rows to order struct
 	var result []Order = make([]Order, 100)
 	for selDB.Next() {
 		order := Order{}
@@ -207,7 +210,7 @@ func SerializedOrderData(selDB *sql.Rows) []Order {
 		if err != nil {
 			panic(err.Error())
 		}
-		order.OrderID = orderID
+		order.orderID = orderID
 		order.customerID = customerID
 		order.employeeID = employeeID
 		order.shippingMethodID = shippingMethodID
@@ -225,23 +228,23 @@ func SerializedOrderData(selDB *sql.Rows) []Order {
 
 // Customer model
 type Customer struct {
-	CustomerID        int
-	CompanyName       string
-	FirstName         string
-	LastName          string
-	BillingAddress    string
-	City              string
-	StateOrProvince   string
-	ZipCode           string
-	Email             string
-	CompanyWebsite    string
-	PhoneNumber       string
-	FaxNumber         string
-	ShipAddress       string
-	ShipCity          string
-	ShipStateProvince string
-	ShipZipCode       string
-	ShipPhoneNumber   string
+	customerID        int
+	companyName       string
+	firstName         string
+	lastName          string
+	billingAddress    string
+	city              string
+	stateOrProvince   string
+	zipCode           string
+	email             string
+	companyWebsite    string
+	phoneNumber       string
+	faxNumber         string
+	shipAddress       string
+	shipCity          string
+	shipStateProvince string
+	shipZipCode       string
+	shipPhoneNumber   string
 }
 
 //Employee Model
@@ -269,7 +272,7 @@ type ShippingMethod struct {
 
 // Order Model
 type Order struct {
-	OrderID          int
+	orderID          int
 	customerID       int
 	employeeID       int
 	shippingMethodID int
